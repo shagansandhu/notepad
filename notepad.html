@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notepad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 740px; ;
+            background-image: linear-gradient(white,#ccc);
+        }
+
+        #notepad {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 5px solid #ccc;
+        }
+
+        #notepad textarea {
+            width: 100%;
+            min-height: 100px;
+            border: 20%;
+            margin-bottom: 10px;
+        }
+
+        #save-button, #clear-button {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 5px 10px;
+            background-color: #0074d9;
+            color: #fff;
+            border: 10%;
+            cursor: pointer;
+        }
+
+        #notes-list {
+            border: 3px solid #ccc;
+            padding: 10px;
+            max-height: 300px;
+            margin-top: 10%;
+        }
+    </style>
+</head>
+<body>
+    <h1><b><center>Notepad</center></b></h1>
+    <div id="notepad">
+        <textarea id="content" placeholder="Type your note here"></textarea>
+        <button id="save-button">Save</button>
+        <button id="clear-button">Clear All</button>
+        <div id="notes-list"></div>
+    </div>
+
+    <script>
+        const contentTextArea = document.getElementById("content");
+        const saveButton = document.getElementById("save-button");
+        const clearButton = document.getElementById("clear-button");
+        const notesList = document.getElementById("notes-list");
+
+        // Load saved notes from local storage and display them
+        function loadNotes() {
+            notesList.innerHTML = "";
+            const savedNotes = JSON.parse(localStorage.getItem("notepad_notes")) || [];
+            savedNotes.forEach((note, index) => {
+                const noteDiv = document.createElement("div");
+                noteDiv.textContent = `${index + 1}. ${note}`;
+                notesList.appendChild(noteDiv);
+            });
+        }
+
+        // Save a new note to local storage
+        function saveNote() {
+            const content = contentTextArea.value.trim();
+            if (content) {
+                const savedNotes = JSON.parse(localStorage.getItem("notepad_notes")) || [];
+                savedNotes.push(content);
+                localStorage.setItem("notepad_notes", JSON.stringify(savedNotes));
+                contentTextArea.value = "";
+                loadNotes();
+            }
+        }
+
+        // Clear all notes from local storage
+        function clearNotes() {
+            localStorage.removeItem("notepad_notes");
+            loadNotes();
+        }
+
+        // Event listeners
+        saveButton.addEventListener("click", saveNote);
+        clearButton.addEventListener("click", clearNotes);
+
+        // Initial load of notes
+        loadNotes();
+    </script>
+</body>
+</html>
